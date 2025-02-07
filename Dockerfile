@@ -1,14 +1,35 @@
-# Stage 1: Build the application
-FROM maven:3.8.8-eclipse-temurin-17-alpine AS buildWORKDIR /app
+# ----------------------------
+# Stage 1: Build the JAR
+# ----------------------------
+FROM eclipse-temurin:17-jdk-alpine AS build
+WORKDIR /app
+
 # Copy Maven/Gradle wrapper and config
 COPY .mvn/ .mvn/
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
+COPY mvnw pom.xml ./
 
-# Stage 2: Run the application
+
+# Copy the source code
+COPY src ./src
+
+
+# Build the application (skip tests if you prefer fast builds)
+RUN ./mvnw clean package -DskipTests
+
+
+# ----------------------------
+# Stage 2: Create the runtime image
+# ----------------------------
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+
+# Expose the port used by the service (change as appropriate)
+# e.g., 8086 for billing, 8083 for scheduling, etc.
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
+# Copy the built .jar from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Run the application
+ENTRYPOINT ["java","-jar","/app/app.jar"]
+
