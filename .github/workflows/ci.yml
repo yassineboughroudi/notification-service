@@ -35,15 +35,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # 5. Define environment variables for Docker tags
-      - name: Define Docker Image Tag
-        run: echo "IMAGE_TAG=${{ secrets.DOCKERHUB_USERNAME }}/notification-service:${{ github.sha }}" >> $GITHUB_ENV
-
-      # 6. Build Docker Image (commit SHA tag)
+      # 5. Build Docker image (tag it with the commit SHA for uniqueness)
       - name: Build Docker Image
         run: |
-          echo "Building Docker image with tag: $IMAGE_TAG"
-          docker build -t $IMAGE_TAG .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/notification-service:${{ github.sha }} .
 
       # 7. Push Docker Image (commit SHA tag)
       - name: Push Docker Image
@@ -51,8 +46,8 @@ jobs:
           echo "Pushing Docker image: $IMAGE_TAG"
           docker push $IMAGE_TAG
 
-      # 8. Tag and push 'latest' (Optional)
+      # 7. (Optional) Tag and push 'latest'
       - name: Tag and Push 'latest'
         run: |
-          docker tag $IMAGE_TAG ${{ secrets.DOCKERHUB_USERNAME }}/notification-service:latest
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/notification-service:${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }}/patient-management-service:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/notification-service:latest
