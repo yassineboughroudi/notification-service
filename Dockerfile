@@ -1,6 +1,5 @@
 # Stage 1: Build the application
-FROM eclipse-temurin:17-jdk-alpine AS build
-WORKDIR /app
+FROM maven:3.8.8-eclipse-temurin-17-alpine AS buildWORKDIR /app
 # Copy Maven/Gradle wrapper and config
 COPY .mvn/ .mvn/
 COPY pom.xml .
