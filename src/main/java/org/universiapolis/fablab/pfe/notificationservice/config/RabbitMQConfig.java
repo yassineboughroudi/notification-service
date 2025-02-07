@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    @Value("${notification.queue}")
+    @Value("${notification.queue:notifications}") // ✅ Default value added
     private String queueName;
 
     @Bean
