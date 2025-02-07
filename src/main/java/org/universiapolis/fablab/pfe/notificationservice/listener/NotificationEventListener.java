@@ -15,6 +15,7 @@ public class NotificationEventListener {
     @RabbitListener(queues = "notification.queue")
     public void handleNotificationEvent(@Payload NotificationRequest request) {
         notificationService.sendNotification(request);
+
     }
 
 }
