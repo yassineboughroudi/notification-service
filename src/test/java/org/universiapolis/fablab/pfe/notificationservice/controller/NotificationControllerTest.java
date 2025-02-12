@@ -41,7 +41,7 @@ public class NotificationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Notification sent successfully."));
+                .andExpect(content().string("Notification sent successfully!"));
 
         // Verify that the NotificationService.sendNotification method was called
         Mockito.verify(notificationService).sendNotification(any(NotificationRequest.class));
